@@ -1,0 +1,8 @@
+ng add @ngrx/store
+
+open app.module.ts
+  StoreModule.forRoot(reducers, {metaReducers})
+
+https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en
+
+ng add @ngrx/store-devtools
