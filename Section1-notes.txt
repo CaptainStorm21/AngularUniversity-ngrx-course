@@ -1,0 +1,248 @@
+Let's, for example, click here on The View button so that we head over to the car space and let's
+pay attention to the loading of data.
+So as we can see after a moment, the data has been loaded.
+And if we open here, our network dev here in our chrome dev tools, we are going to see also the multiple
+HTTP requests that have been made so far.
+
+So if I go back here to the courses page, we are going to see that we see here an EPA request to the
+
+EPA slash courses URL.
+
+And this is what is getting us back the data from the back end.
+
+Now, if I click here on The View button, we are going to get here a second request to the same courses,
+
+EPA to fetch again the data needed.
+
+Now, if we go back here to the same page as we were before, we are going to see that again.
+
+We are doing another EPA request in order to display the data and we are showing to the user, again,
+
+a loading indicator.
+
+So we have loaded this data initially.
+
+When we navigate to a page, we are going to load some of the data again and we are going to get here
+
+a brief pause while the data gets loaded.
+
+And if we go back to the previous courses page, we are going to lower the data a third or fourth time.
+
+So this is a typical application that does not use any state management solution while we navigate for
+
+the application, whenever we change from one screen together, all the data that that screen needs
+
+is going to get fixed each time from the back end.
+
+Now, this solution is very simple to implement each component, such as, for example, the home component,
+
+which corresponds to this list of courses with a couple of tabs that we see here on the screen is implemented
+
+in a very simple way.
+
+// home.component.ts
+
+So if we open here the home component typescript file,
+we're going to see that this component gets
+injected here in the constructor courses,  HTTP service.
+
+constructor(
+  private dialog: MatDialog,
+  private courseHttpService: CourseHttpService
+)
+
+That is a plain angular,
+HTTP based service that then gets used here in end are
+needed to load all the courses from the back end.
+
+This is then assigned here to a couple of observable variables, such as beginner courses, advanced
+
+courses and Bromo total, where we also add here some filtering to filter the data or even to accumulate
+
+it like we do here.
+
+Whenever we are calculating the total number of courses that are currently in promotion, we're able
+
+to define this free observables and we're going to pass this observables to the template of the component
+
+via the async pipe.
+
+So as you can see here, we are passing the promotion total observable directly here to this part of
+
+the template that is displaying a promotional counter.
+
+And we are also passing in here the beginner and advanced courses to each of the two tabs in our home
+
+screen.
+
+
+// Edit button
+Let's click here on the edit button of the first course in our list.
+
+And we're going to see here an edit course dialogue.
+
+So this will allow us to edit the data that we have here.
+
+Let's say that, for example, we would like to do something like switching the category of the course.
+
+Let's say that this was an advanced course.
+
+And let's also say that we would like to make this course a promotion course.
+
+So the course is currently under a reduced price.
+
+So whenever we click here on the.
+
+Save button, and I'm not going to do that immediately.
+
+We are going to do a HTP request to the Wacken in order to save the data and we're also going to close
+
+the dialogue.
+
+Now, the problem is that these operation of data modification has had some impact on the data that
+
+gets displayed here on the screen.
+
+So that operation that we did has changed, for example, here the location of the course by switching
+
+it here from the beginner step to the advanced.
+
+So maybe we could have also changed the title of the course.
+
+And also the value of the promotion counter should switch from zero to one.
+
+So there were no courses under promotion and we have marked this course as being in promotion.
+
+So the value one should be displayed here.
+
+Now, how would we do that in an application does not do any state management.
+
+Well, editing the data locally here at the level of this component would be difficult because maybe
+
+this data would be used somewhere else on the application.
+
+So here in a typical application, without any state management solution, if we would modify the data,
+
+let's say, by activating here the promotion and switching the course to advanced, whenever we do a
+
+save and the data gets modified in the backend, we are typically going to have to reload with all the
+
+data on the screen in order to be able to display the updated data to the user.
+
+So as you can see, we have again shown a loading indicator to the user.
+
+We have a refresh again one more time, all the same data that we already fetch multiple times.
+
+And we have moved the course here to the advanced tab and we have also modified the title.
+
+So this is an example of a typical application without any state management solution.
+
+The components are very simple to implement, but on the other hand, we are constantly issuing HTP
+
+requests to the server in order to fetch the same data again and again from the server.
+
+And this is due to multiple reasons.
+
+One of the main reasons being that the data that we have here in the front end under the form of these
+
+observable variables is not independent of the life cycle of this component.
+
+So these variables here are tied to the home component.
+
+So whenever we navigate away from this component and the component gets destroyed and we get back again
+
+to a new instance of the component, we are going to have to recreate these variables.
+
+So in this type of applications, the life cycle of the data is tied to the life cycle of each component.
+
+So that's why each major screen in our application has to fetch again the data from the server each
+
+time that the component gets instantiated.
+
+Now, well, this solution is a viable solution for a lot of applications.
+
+We would like to build an application that has a much improved user experience.
+
+So we would like to build an application that doesn't have to do this constant HTP requests from the
+
+server to fetch the same data again and again just because we have switched from one screen to the other.
+
+So we want to sort of create an in-memory database on the client side where we are going to keep our
+
+data while the application is still active.
+
+We would also like to avoid to have to constantly show these loading indicators to the user with each
+
+base transition.
+
+So if we have just fetch the data from the server a moment ago, we will like the transition to be immediate.
+
+There is no need to contact the server again to fetch data that was not modified.
+
+And also in the case, when the data do gets modified, we would like that modification to be reflected
+
+in the user interface immediately so the save can be as much as possible then in the background without
+
+disturbing the user experience.
+
+So in this case, we will immediately update here the screen.
+
+We will, in this particular case, switch the entire course from the beginner step to the advanced
+
+dev.
+
+We will update the promotion counter without having to again fetch the same data from the server.
+
+So let's summarize the type of features that we want in an improved version of this application.
+
+We would like to reduce as much as possible the number of unnecessary EDP requests to the server.
+
+We would like to do only the requests that we absolutely need and we would like to create an in-memory
+
+database that contains our data that is independent of the life cycle of any component.
+
+These will allow the data to survive during navigations in our application and will avoid the need of
+
+constantly fetching the data from the server.
+
+Again, we would like to build a much improved user experience that does not involve constantly having
+
+to show to the user Luling indicators.
+
+We would like as much as possible for all database safe operations to be done in the background without
+
+interrupting the user experience.
+
+And we would like those modifications to be immediately.
+
+That on the screen, more than that, we would not like to have to write specific logic to handle all
+
+the data modification edge cases.
+
+For example, we would not like to want to write some specific code that would detect if the dialogue
+
+has changed the category of the course to determine if we should swap the course between one and the
+
+other.
+
+We would like simply that the viewer updates itself with the new version of the data without having
+
+to handle all the data modification edge cases one by one separately.
+
+So in summary, what we need in order to implement all these features is a state management solution.
+And that's exactly what engineering is.
+It's an angular, specific state management solution that will allow us to create a client site database
+with our data, and it will allow us to minimize the number of ETP requests done to the server.
+It will allow us to easily have different parts of our view, reflect new versions of the data.
+It's going to allow us to have a much improved user experience with minimal clothing indicators and
+having the UI immediately reflect the data modifications without having to call again the server.
+So when compared to a traditional application made without any state management, this is really a next
+generation application that we are talking about.
+With a much improved user experience and performance, we're going to learn how to use indirects in
+order to implement all those features in our application.
+Engineering is based on the store architecture.
+So let's quickly cover it and then let's get started.
+Adding engineers to our application and adding all this statement.
+Management features one by one.
+
+
