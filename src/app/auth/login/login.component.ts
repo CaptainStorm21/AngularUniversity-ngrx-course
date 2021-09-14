@@ -44,22 +44,19 @@ export class LoginComponent implements OnInit {
       this.auth.login(val.email, val.password)
           .pipe(
               tap(user => {
-
-                  console.log(user);
-
-                  this.store.dispatch(login({user}));
-
+                console.log(user);
+                // we save a profile to the store
+                // the only way to modify the data inside the store
+                //is to use the dispatch method.
+                this.store.dispatch(login({ user }));
+                //after a user logs in, user can navigate to courses
                   this.router.navigateByUrl('/courses');
-
               })
           )
           .subscribe(
               noop,
               () => alert('Login Failed')
           );
-
-
-
   }
 
 }
