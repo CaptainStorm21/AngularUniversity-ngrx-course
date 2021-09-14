@@ -7,6 +7,8 @@ import {AuthService} from "../auth.service";
 import {tap} from "rxjs/operators";
 import {noop} from "rxjs";
 import {Router} from "@angular/router";
+import { AppState } from '../../reducers';
+import { login } from '../auth.actions';
 
 @Component({
   selector: 'login',
@@ -18,7 +20,8 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
 
   constructor(
-      private fb:FormBuilder,
+    private fb: FormBuilder,
+    private store: Store<AppState>,
       private auth: AuthService,
       private router:Router) {
 
@@ -49,19 +52,12 @@ export class LoginComponent implements OnInit {
                  * a grid like API, where we will have here at
                  * the level of the store methods such as update,
                  * create or delete?
-
 Well, this creates a level of indirection here by dispatching actions, we are not explicitly telling
-
 the store how to modify the data.
-
 We are either communicating to the store an event that we know that has happened here at the level of
-
 the component, or we are issuing an explicit command.
-
 But it's the store that is going to decide what to do with the action and how it's going to modify its
-
 internal state.
-
 The store might, for example, do a request to the server and fetch some extra information about the
 
 user and add it here to the user profile in order to build a more complete profile.
@@ -82,7 +78,7 @@ it.
 
                  */
                 // now the store is receiving user profile
-                this.store.dispatch(login({user}));
+                this.store.dispatch(login ({ user }));
                   this.router.navigateByUrl('/courses');
               })
           )
