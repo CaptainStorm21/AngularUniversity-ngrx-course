@@ -6,3 +6,9 @@ open app.module.ts
 https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en
 
 ng add @ngrx/store-devtools
+
+//to start a server
+npm run server
+
+//starting an app
+npm starts
